@@ -2,6 +2,7 @@ package searchclient;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.Stack;
 
 public abstract class Strategy {
     private HashSet<State> explored;
@@ -90,34 +91,41 @@ public abstract class Strategy {
     }
 
     public static class StrategyDFS extends Strategy {
+        private Stack<State> frontier;
+        private HashSet<State> frontierSet;
+
         public StrategyDFS() {
             super();
-            throw new NotImplementedException();
+            frontier = new Stack<>();
+            frontierSet = new HashSet<>();
         }
 
         @Override
         public State getAndRemoveLeaf() {
-            throw new NotImplementedException();
+            State n = frontier.pop();
+            frontierSet.remove(n);
+            return n;
         }
 
         @Override
         public void addToFrontier(State n) {
-            throw new NotImplementedException();
+            frontier.push(n);
+            frontierSet.add(n);
         }
 
         @Override
         public int countFrontier() {
-            throw new NotImplementedException();
+            return frontier.size();
         }
 
         @Override
         public boolean frontierIsEmpty() {
-            throw new NotImplementedException();
+            return frontier.isEmpty();
         }
 
         @Override
         public boolean inFrontier(State n) {
-            throw new NotImplementedException();
+            return frontierSet.contains(n);
         }
 
         @Override
