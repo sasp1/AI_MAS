@@ -8,25 +8,26 @@ import java.util.Random;
 public class State {
     private static final Random RNG = new Random(1);
 
-    public static int MAX_ROW = 70;
-    public static int MAX_COL = 70;
+    public int max_row;
+    public int max_col;
 
     public int agentRow;
     public int agentCol;
 
-    // Arrays are indexed from the top-left of the level, with first index being row and second being column.
+    // Arrays are indexed from the top-left of the level, with first index being row
+    // and second being column.
     // Row 0: (0,0) (0,1) (0,2) (0,3) ...
     // Row 1: (1,0) (1,1) (1,2) (1,3) ...
     // Row 2: (2,0) (2,1) (2,2) (2,3) ...
     // ...
     // (Start in the top left corner, first go down, then go right)
-    // E.g. this.walls[2] is an array of booleans having size MAX_COL.
+    // E.g. this.walls[2] is an array of booleans having size max_col.
     // this.walls[row][col] is true if there's a wall at (row, col)
     //
 
-    public boolean[][] walls = new boolean[MAX_ROW][MAX_COL];
-    public char[][] boxes = new char[MAX_ROW][MAX_COL];
-    public char[][] goals = new char[MAX_ROW][MAX_COL];
+    public boolean[][] walls;
+    public char[][] boxes;
+    public char[][] goals;
 
     public State parent;
     public Command action;
@@ -35,7 +36,13 @@ public class State {
 
     private int _hash = 0;
 
-    public State(State parent) {
+    public State(State parent, int max_row, int max_col) {
+        this.max_row = max_row;
+        this.max_col = max_col;
+        this.walls = new boolean[max_row][max_col];
+        this.boxes = new char[max_row][max_col];
+        this.goals = new char[max_row][max_col];
+
         this.parent = parent;
         if (parent == null) {
             this.g = 0;
@@ -53,8 +60,8 @@ public class State {
     }
 
     public boolean isGoalState() {
-        for (int row = 1; row < MAX_ROW - 1; row++) {
-            for (int col = 1; col < MAX_COL - 1; col++) {
+        for (int row = 1; row < max_row - 1; row++) {
+            for (int col = 1; col < max_col - 1; col++) {
                 char g = goals[row][col];
                 char b = Character.toLowerCase(boxes[row][col]);
                 if (g > 0 && b != g) {
@@ -128,17 +135,17 @@ public class State {
     }
 
     private State ChildState() {
-        State copy = new State(this);
-        for (int row = 0; row < MAX_ROW; row++) {
-            System.arraycopy(this.walls[row], 0, copy.walls[row], 0, MAX_COL);
-            System.arraycopy(this.boxes[row], 0, copy.boxes[row], 0, MAX_COL);
-            System.arraycopy(this.goals[row], 0, copy.goals[row], 0, MAX_COL);
+        State copy = new State(this, max_row, max_col);
+        for (int row = 0; row < max_row; row++) {
+            System.arraycopy(this.walls[row], 0, copy.walls[row], 0, max_col);
+            System.arraycopy(this.boxes[row], 0, copy.boxes[row], 0, max_col);
+            System.arraycopy(this.goals[row], 0, copy.goals[row], 0, max_col);
         }
         return copy;
     }
 
     public ArrayList<State> extractPlan() {
-		ArrayList<State> plan = new ArrayList<>();
+        ArrayList<State> plan = new ArrayList<>();
         State n = this;
         while (!n.isInitialState()) {
             plan.add(n);
@@ -184,11 +191,11 @@ public class State {
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
-        for (int row = 0; row < MAX_ROW; row++) {
+        for (int row = 0; row < max_row; row++) {
             if (!this.walls[row][0]) {
                 break;
             }
-            for (int col = 0; col < MAX_COL; col++) {
+            for (int col = 0; col < max_col; col++) {
                 if (this.boxes[row][col] > 0) {
                     s.append(this.boxes[row][col]);
                 } else if (this.goals[row][col] > 0) {
