@@ -15,6 +15,13 @@ public class SearchClient {
             System.exit(1);
         }
 
+        // based on the level you are running, count number of rows and columns
+
+        // e.g. if SAD1.lvl =>
+
+        int max_row = 7;
+        int max_column = 19;
+
         int row = 0;
         boolean agentFound = false;
         this.initialState = new State(null);
@@ -71,7 +78,8 @@ public class SearchClient {
             }
 
             strategy.addToExplored(leafState);
-            for (State n : leafState.getExpandedStates()) { // The list of expanded states is shuffled randomly; see State.java.
+            for (State n : leafState.getExpandedStates()) { // The list of expanded states is shuffled randomly; see
+                                                            // State.java.
                 if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
                     strategy.addToFrontier(n);
                 }
@@ -92,31 +100,33 @@ public class SearchClient {
         Strategy strategy;
         if (args.length > 0) {
             switch (args[0].toLowerCase()) {
-                case "-bfs":
-                    strategy = new Strategy.StrategyBFS();
-                    break;
-                case "-dfs":
-                    strategy = new Strategy.StrategyDFS();
-                    break;
-                case "-astar":
-                    strategy = new Strategy.StrategyBestFirst(new Heuristic.AStar(client.initialState));
-                    break;
-                case "-wastar":
-                    strategy = new Strategy.StrategyBestFirst(new Heuristic.WeightedAStar(client.initialState, 5));
-                    break;
-                case "-greedy":
-                    strategy = new Strategy.StrategyBestFirst(new Heuristic.Greedy(client.initialState));
-                    break;
-                default:
-                    strategy = new Strategy.StrategyBFS();
-                    System.err.println("Defaulting to BFS search. Use arguments -bfs, -dfs, -astar, -wastar, or -greedy to set the search strategy.");
+            case "-bfs":
+                strategy = new Strategy.StrategyBFS();
+                break;
+            case "-dfs":
+                strategy = new Strategy.StrategyDFS();
+                break;
+            case "-astar":
+                strategy = new Strategy.StrategyBestFirst(new Heuristic.AStar(client.initialState));
+                break;
+            case "-wastar":
+                strategy = new Strategy.StrategyBestFirst(new Heuristic.WeightedAStar(client.initialState, 5));
+                break;
+            case "-greedy":
+                strategy = new Strategy.StrategyBestFirst(new Heuristic.Greedy(client.initialState));
+                break;
+            default:
+                strategy = new Strategy.StrategyBFS();
+                System.err.println(
+                        "Defaulting to BFS search. Use arguments -bfs, -dfs, -astar, -wastar, or -greedy to set the search strategy.");
             }
         } else {
             strategy = new Strategy.StrategyBFS();
-            System.err.println("Defaulting to BFS search. Use arguments -bfs, -dfs, -astar, -wastar, or -greedy to set the search strategy.");
+            System.err.println(
+                    "Defaulting to BFS search. Use arguments -bfs, -dfs, -astar, -wastar, or -greedy to set the search strategy.");
         }
 
-		ArrayList<State> solution;
+        ArrayList<State> solution;
         try {
             solution = client.Search(strategy);
         } catch (OutOfMemoryError ex) {
