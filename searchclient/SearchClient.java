@@ -24,7 +24,7 @@ public class SearchClient {
 
         int row = 0;
         boolean agentFound = false;
-        this.initialState = new State(null, max_row, max_column);
+        this.initialState = new State(null);
 
         while (!line.equals("")) {
             for (int col = 0; col < line.length(); col++) {

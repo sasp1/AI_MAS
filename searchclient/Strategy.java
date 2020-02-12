@@ -2,6 +2,7 @@ package searchclient;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 public abstract class Strategy {
@@ -136,36 +137,42 @@ public abstract class Strategy {
 
     public static class StrategyBestFirst extends Strategy {
         private Heuristic heuristic;
+        private PriorityQueue<State> frontier;
+        private HashSet<State> frontierSet;
 
         public StrategyBestFirst(Heuristic h) {
             super();
             this.heuristic = h;
-            throw new NotImplementedException();
+            this.frontier = new PriorityQueue<>(h);
+            this.frontierSet = new HashSet<>();
         }
 
         @Override
         public State getAndRemoveLeaf() {
-            throw new NotImplementedException();
+            State state = frontier.poll();
+            frontierSet.remove(state);
+            return state;
         }
 
         @Override
         public void addToFrontier(State n) {
-            throw new NotImplementedException();
+            frontier.add(n);
+            frontierSet.add(n);
         }
 
         @Override
         public int countFrontier() {
-            throw new NotImplementedException();
+            return frontier.size();
         }
 
         @Override
         public boolean frontierIsEmpty() {
-            throw new NotImplementedException();
+            return frontier.isEmpty();
         }
 
         @Override
         public boolean inFrontier(State n) {
-            throw new NotImplementedException();
+            return frontierSet.contains(n);
         }
 
         @Override
