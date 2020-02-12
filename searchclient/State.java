@@ -39,7 +39,9 @@ public class State {
 
     private int _hash = 0;
 
-    public State(State parent) {
+    public State(State parent, int max_row, int max_col) {
+        this.MAX_ROW = max_row;
+        this.MAX_COL = max_col;
         this.walls = new boolean[MAX_ROW][MAX_COL];
         this.boxes = new char[MAX_ROW][MAX_COL];
         this.goals = new char[MAX_ROW][MAX_COL];
@@ -136,7 +138,7 @@ public class State {
     }
 
     private State ChildState() {
-        State copy = new State(this);
+        State copy = new State(this, MAX_ROW, MAX_COL);
         for (int row = 0; row < MAX_ROW; row++) {
             System.arraycopy(this.walls[row], 0, copy.walls[row], 0, MAX_COL);
             System.arraycopy(this.boxes[row], 0, copy.boxes[row], 0, MAX_COL);

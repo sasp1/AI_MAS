@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public class SearchClient {
     public State initialState;
+    public State stateHolder;
+
 
     public SearchClient(BufferedReader serverMessages) throws Exception {
         // Read lines specifying colors
@@ -19,31 +21,31 @@ public class SearchClient {
 
         // e.g. if SAD1.lvl =>
 
-        int max_row = 10;
-        int max_column = 10;
+        int max_row = 70;
+        int max_column = 70;
 
         int row = 0;
         boolean agentFound = false;
-        this.initialState = new State(null);
+        this.stateHolder = new State(null, max_row, max_column);
 
         while (!line.equals("")) {
             for (int col = 0; col < line.length(); col++) {
                 char chr = line.charAt(col);
 
                 if (chr == '+') { // Wall.
-                    this.initialState.walls[row][col] = true;
+                    this.stateHolder.walls[row][col] = true;
                 } else if ('0' <= chr && chr <= '9') { // Agent.
                     if (agentFound) {
                         System.err.println("Error, not a single agent level");
                         System.exit(1);
                     }
                     agentFound = true;
-                    this.initialState.agentRow = row;
-                    this.initialState.agentCol = col;
+                    this.stateHolder.agentRow = row;
+                    this.stateHolder.agentCol = col;
                 } else if ('A' <= chr && chr <= 'Z') { // Box.
-                    this.initialState.boxes[row][col] = chr;
+                    this.stateHolder.boxes[row][col] = chr;
                 } else if ('a' <= chr && chr <= 'z') { // Goal.
-                    this.initialState.goals[row][col] = chr;
+                    this.stateHolder.goals[row][col] = chr;
                 } else if (chr == ' ') {
                     // Free space.
                 } else {
@@ -54,6 +56,36 @@ public class SearchClient {
             line = serverMessages.readLine();
             row++;
         }
+
+
+        //___________________T TILFØJELSE___________________________
+
+        // Find max columns
+        for (int col = 0; col < this.stateHolder.walls[0].length; col++) {
+            if (!this.stateHolder.walls[0][col]){
+                max_column = col;
+                break;
+            }
+        }
+
+        // Find max rows
+        for (row = 0; row < this.stateHolder.walls.length; row++) {
+            if (!this.stateHolder.walls[row][0]){
+                max_row = row;
+                break;
+            }
+        }
+
+        //Create new initial state
+        this.initialState = new State(null, max_row, max_column);
+        this.initialState.walls = this.stateHolder.walls;
+        this.initialState.boxes = this.stateHolder.boxes;
+        this.initialState.goals = this.stateHolder.goals;
+        this.initialState.agentCol = this.stateHolder.agentCol;
+        this.initialState.agentRow = this.stateHolder.agentRow;
+
+
+        // ____________________T TILFØJELSE ______________________________
     }
 
     public ArrayList<State> Search(Strategy strategy) {
