@@ -19,8 +19,8 @@ public class SearchClient {
 
         // e.g. if SAD1.lvl =>
 
-        int max_row = 7;
-        int max_column = 19;
+        int max_row = 10;
+        int max_column = 10;
 
         int row = 0;
         boolean agentFound = false;
