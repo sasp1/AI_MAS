@@ -8,7 +8,6 @@ public class SearchClient {
     public State initialState;
     public State stateHolder;
 
-
     public SearchClient(BufferedReader serverMessages) throws Exception {
         // Read lines specifying colors
         String line = serverMessages.readLine();
@@ -57,12 +56,11 @@ public class SearchClient {
             row++;
         }
 
-
-        //___________________T TILFØJELSE___________________________
+        // ___________________T TILFØJELSE___________________________
 
         // Find max columns
         for (int col = 0; col < this.stateHolder.walls[0].length; col++) {
-            if (!this.stateHolder.walls[0][col]){
+            if (!this.stateHolder.walls[0][col]) {
                 max_column = col;
                 break;
             }
@@ -70,25 +68,27 @@ public class SearchClient {
 
         // Find max rows
         for (row = 0; row < this.stateHolder.walls.length; row++) {
-            if (!this.stateHolder.walls[row][0]){
+            if (!this.stateHolder.walls[row][0]) {
                 max_row = row;
                 break;
             }
         }
 
-        //Create new initial state
+        // Create new initial state
+        // The walls and goals are static, so no need to initialize the arrays every
+        // time
+        State.walls = this.stateHolder.walls;
+        State.goals = this.stateHolder.goals;
+
         this.initialState = new State(null, max_row, max_column);
-        this.initialState.walls = this.stateHolder.walls;
         this.initialState.boxes = this.stateHolder.boxes;
-        this.initialState.goals = this.stateHolder.goals;
         this.initialState.agentCol = this.stateHolder.agentCol;
         this.initialState.agentRow = this.stateHolder.agentRow;
-
 
         // ____________________T TILFØJELSE ______________________________
     }
 
-    public ArrayList<State> Search(Strategy strategy) {
+    public ArrayList<State> Search(final Strategy strategy) {
         System.err.format("Search starting with strategy %s.\n", strategy.toString());
         strategy.addToFrontier(this.initialState);
 
@@ -103,15 +103,16 @@ public class SearchClient {
                 return null;
             }
 
-            State leafState = strategy.getAndRemoveLeaf();
+            final State leafState = strategy.getAndRemoveLeaf();
 
             if (leafState.isGoalState()) {
                 return leafState.extractPlan();
             }
 
             strategy.addToExplored(leafState);
-            for (State n : leafState.getExpandedStates()) { // The list of expanded states is shuffled randomly; see
-                                                            // State.java.
+            for (final State n : leafState.getExpandedStates()) { // The list of expanded states is shuffled randomly;
+                                                                  // see
+                // State.java.
                 if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
                     strategy.addToFrontier(n);
                 }
@@ -120,14 +121,14 @@ public class SearchClient {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        BufferedReader serverMessages = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(final String[] args) throws Exception {
+        final BufferedReader serverMessages = new BufferedReader(new InputStreamReader(System.in));
 
         // Use stderr to print to console
         System.err.println("SearchClient initializing. I am sending this using the error output stream.");
 
         // Read level and create the initial state of the problem
-        SearchClient client = new SearchClient(serverMessages);
+        final SearchClient client = new SearchClient(serverMessages);
 
         Strategy strategy;
         if (args.length > 0) {
@@ -161,7 +162,7 @@ public class SearchClient {
         ArrayList<State> solution;
         try {
             solution = client.Search(strategy);
-        } catch (OutOfMemoryError ex) {
+        } catch (final OutOfMemoryError ex) {
             System.err.println("Maximum memory usage exceeded.");
             solution = null;
         }
@@ -175,10 +176,10 @@ public class SearchClient {
             System.err.println("Found solution of length " + solution.size());
             System.err.println(strategy.searchStatus());
 
-            for (State n : solution) {
-                String act = n.action.toString();
+            for (final State n : solution) {
+                final String act = n.action.toString();
                 System.out.println(act);
-                String response = serverMessages.readLine();
+                final String response = serverMessages.readLine();
                 if (response.contains("false")) {
                     System.err.format("Server responsed with %s to the inapplicable action: %s\n", response, act);
                     System.err.format("%s was attempted in \n%s\n", act, n.toString());

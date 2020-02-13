@@ -11,15 +11,14 @@ public class State {
     public static int MAX_ROW = 70;
     public static int MAX_COL = 70;
 
-    public boolean[][] walls = new boolean[MAX_ROW][MAX_COL];
     public char[][] boxes = new char[MAX_ROW][MAX_COL];
-    public char[][] goals = new char[MAX_ROW][MAX_COL];
-
+    public static boolean[][] walls = new boolean[MAX_ROW][MAX_COL];
+    public static char[][] goals = new char[MAX_ROW][MAX_COL];
 
     public int agentRow;
     public int agentCol;
 
-    // Arrays are indexed from the top-left of the  level, with first index being row
+    // Arrays are indexed from the top-left of the level, with first index being row
     // and second being column.
     // Row 0: (0,0) (0,1) (0,2) (0,3) ...
     // Row 1: (1,0) (1,1) (1,2) (1,3) ...
@@ -29,8 +28,6 @@ public class State {
     // E.g. this.walls[2] is an array of booleans having size max_col.
     // this.walls[row][col] is true if there's a wall at (row, col)
     //
-
-
 
     public State parent;
     public Command action;
@@ -42,9 +39,7 @@ public class State {
     public State(State parent, int max_row, int max_col) {
         this.MAX_ROW = max_row;
         this.MAX_COL = max_col;
-        this.walls = new boolean[MAX_ROW][MAX_COL];
         this.boxes = new char[MAX_ROW][MAX_COL];
-        this.goals = new char[MAX_ROW][MAX_COL];
 
         this.parent = parent;
         if (parent == null) {
