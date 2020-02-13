@@ -8,7 +8,6 @@ public class SearchClient {
     public State initialState;
     public State stateHolder;
 
-
     public SearchClient(BufferedReader serverMessages) throws Exception {
         // Read lines specifying colors
         String line = serverMessages.readLine();
@@ -57,12 +56,11 @@ public class SearchClient {
             row++;
         }
 
-
-        //___________________T TILFØJELSE___________________________
+        // ___________________T TILFØJELSE___________________________
 
         // Find max columns
         for (int col = 0; col < this.stateHolder.walls[0].length; col++) {
-            if (!this.stateHolder.walls[0][col]){
+            if (!this.stateHolder.walls[0][col]) {
                 max_column = col;
                 break;
             }
@@ -70,20 +68,22 @@ public class SearchClient {
 
         // Find max rows
         for (row = 0; row < this.stateHolder.walls.length; row++) {
-            if (!this.stateHolder.walls[row][0]){
+            if (!this.stateHolder.walls[row][0]) {
                 max_row = row;
                 break;
             }
         }
 
-        //Create new initial state
+        // Create new initial state
+        // The walls and goals are static, so no need to initialize the arrays every
+        // time
+        State.walls = this.stateHolder.walls;
+        State.goals = this.stateHolder.goals;
+
         this.initialState = new State(null, max_row, max_column);
-        this.initialState.walls = this.stateHolder.walls;
         this.initialState.boxes = this.stateHolder.boxes;
-        this.initialState.goals = this.stateHolder.goals;
         this.initialState.agentCol = this.stateHolder.agentCol;
         this.initialState.agentRow = this.stateHolder.agentRow;
-
 
         // ____________________T TILFØJELSE ______________________________
     }
