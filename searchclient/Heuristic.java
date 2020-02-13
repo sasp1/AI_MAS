@@ -1,6 +1,10 @@
 package searchclient;
 
+import java.awt.*;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Heuristic implements Comparator<State> {
     public Heuristic(State initialState) {
@@ -8,7 +12,31 @@ public abstract class Heuristic implements Comparator<State> {
     }
 
     public int h(State n) {
-        throw new NotImplementedException();
+        HashMap<String, Point> boxMap = new HashMap<>();
+        HashMap<String, Point> goalMap = new HashMap<>();
+
+        for (int i = 0; i < State.MAX_COL; i++) {
+            for (int j = 0; j < State.MAX_ROW; j++) {
+                if ('A' <= n.boxes[i][j]  && n.boxes[i][j]  <= 'Z'){
+                    boxMap.put(String.valueOf(n.boxes[i][j]), new Point(i, j));
+                }
+
+                if ('a' <= n.goals[i][j]  && n.goals[i][j]  <= 'z'){
+                    goalMap.put(String.valueOf(n.goals[i][j]), new Point(i, j));
+                }
+            }
+        }
+
+        AtomicInteger cost = new AtomicInteger(0);
+
+        boxMap.forEach((k,v) -> {
+            Point goal = goalMap.get(k.toLowerCase());
+            int xDistance = Math.abs(goal.x - v.x);
+            int yDistance = Math.abs(goal.y - v.y);
+            cost.addAndGet(xDistance + yDistance);
+        });
+
+        return cost.get();
     }
 
     public abstract int f(State n);
