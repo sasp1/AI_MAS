@@ -21,7 +21,7 @@ Starting the server using the searchclient:
     $ java -jar ../server.jar -l ../levels/SAD1.lvl -c "java searchclient.SearchClient" -g 150 -t 300
 
 The searchclient uses the BFS search strategy by default. Use arguments -dfs, -astar, -wastar, or -greedy to set
-alternative search strategies (after you implement them). For instance, to use DFS search on the same level as above:
+
     $ java -jar ../server.jar -l ../levels/SAD1.lvl -c "java searchclient.SearchClient -dfs" -g 150 -t 300
 
 Memory settings:
@@ -41,3 +41,7 @@ Rendering on Unix systems:
     Note that this JVM option must be set in the Java command that invokes the *server*:
         $ java -Dsun.java2d.opengl=true -jar ../server.jar -l ../levels/SAD1.lvl -c "java searchclient.SearchClient" -g 150 -t 300
     See http://docs.oracle.com/javase/8/docs/technotes/guides/2d/flags.html for more information.
+
+If you want to benchmark your branch against the initial state of the project do >
+git checkout initial-state-of-the-project
+
