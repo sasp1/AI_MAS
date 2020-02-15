@@ -15,22 +15,25 @@ public class SearchClient {
             System.err.println("Error, client does not support colors.");
             System.exit(1);
         }
-
-        // based on the level you are running, count number of rows and columns
-
-        // e.g. if SAD1.lvl =>
-
-        int max_row = 70;
-        int max_column = 70;
+        int walls_x_length = 0;
+        int walls_y_length = 0;
 
         int row = 0;
         boolean agentFound = false;
-        this.stateHolder = new State(null, max_row, max_column);
+
+        this.stateHolder = new State(null);
 
         while (!line.equals("")) {
+            // counts number of lines (e.g. the max length in the y-direction)
+            walls_y_length++;
+
+            // find the longest line, e.g. the max length in the x-direction)
+            if (line.length() > walls_x_length) {
+                walls_x_length = line.length();
+            }
+
             for (int col = 0; col < line.length(); col++) {
                 char chr = line.charAt(col);
-
                 if (chr == '+') { // Wall.
                     this.stateHolder.walls[row][col] = true;
                 } else if ('0' <= chr && chr <= '9') { // Agent.
@@ -56,36 +59,18 @@ public class SearchClient {
             row++;
         }
 
-        // ___________________T TILFØJELSE___________________________
-
-        // Find max columns
-        for (int col = 0; col < this.stateHolder.walls[0].length; col++) {
-            if (!this.stateHolder.walls[0][col]) {
-                max_column = col;
-                break;
-            }
-        }
-
-        // Find max rows
-        for (row = 0; row < this.stateHolder.walls.length; row++) {
-            if (!this.stateHolder.walls[row][0]) {
-                max_row = row;
-                break;
-            }
-        }
-
         // Create new initial state
         // The walls and goals are static, so no need to initialize the arrays every
         // time
         State.walls = this.stateHolder.walls;
         State.goals = this.stateHolder.goals;
+        State.MAX_ROW = walls_y_length;
+        State.MAX_COL = walls_x_length;
 
-        this.initialState = new State(null, max_row, max_column);
+        this.initialState = new State(null);
         this.initialState.boxes = this.stateHolder.boxes;
         this.initialState.agentCol = this.stateHolder.agentCol;
         this.initialState.agentRow = this.stateHolder.agentRow;
-
-        // ____________________T TILFØJELSE ______________________________
     }
 
     public ArrayList<State> Search(Strategy strategy) {
