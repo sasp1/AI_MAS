@@ -15,21 +15,17 @@ public class SearchClient {
             System.err.println("Error, client does not support colors.");
             System.exit(1);
         }
-        int walls_x_length = 0;
-        int walls_y_length = 0;
-
+        int column = 0;
         int row = 0;
+
         boolean agentFound = false;
 
         this.stateHolder = new State(null);
 
         while (!line.equals("")) {
-            // counts number of lines (e.g. the max length in the y-direction)
-            walls_y_length++;
-
             // find the longest line, e.g. the max length in the x-direction)
-            if (line.length() > walls_x_length) {
-                walls_x_length = line.length();
+            if (line.length() > column) {
+                column = line.length();
             }
 
             for (int col = 0; col < line.length(); col++) {
@@ -56,6 +52,8 @@ public class SearchClient {
                 }
             }
             line = serverMessages.readLine();
+
+            // counts the number of rows
             row++;
         }
 
@@ -64,8 +62,8 @@ public class SearchClient {
         // time
         State.walls = this.stateHolder.walls;
         State.goals = this.stateHolder.goals;
-        State.MAX_ROW = walls_y_length;
-        State.MAX_COL = walls_x_length;
+        State.MAX_ROW = row;
+        State.MAX_COL = column;
 
         this.initialState = new State(null);
         this.initialState.boxes = this.stateHolder.boxes;
