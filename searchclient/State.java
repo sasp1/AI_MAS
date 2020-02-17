@@ -1,9 +1,8 @@
 package searchclient;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
+import java.awt.*;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class State {
     private static final Random RNG = new Random(1);
@@ -210,5 +209,4 @@ public class State {
         }
         return s.toString();
     }
-
 }
