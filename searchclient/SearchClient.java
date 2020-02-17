@@ -62,7 +62,6 @@ public class SearchClient {
         // time
         State.walls = this.stateHolder.walls;
         State.goals = this.stateHolder.goals;
-
         State.MAX_ROW = row;
         State.MAX_COL = column;
 
